@@ -2,6 +2,10 @@ name: Build a Container image
 
 on:
   push:
+    branches:
+      - main
+    tags:
+      - 'v*'
 
 env:
   REGISTRY: ghcr.io
@@ -21,9 +25,11 @@ jobs:
       - name: Build and push container image
         run: |
           IMAGE_ID=$REGISTRY/${{ github.repository_owner }}/$IMAGE_NAME
-          VERSION=latest
-          echo IMAGE_ID=$IMAGE_ID
+          VERSION=${GITHUB_REF_NAME#v}
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE=$IMAGE_ID
           echo VERSION=$VERSION
+
           docker build -t $IMAGE_NAME \
             --label "org.opencontainers.image.title=${IMAGE_NAME}" \
             --label "org.opencontainers.image.version=${VERSION}" \
