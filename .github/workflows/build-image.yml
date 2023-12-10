@@ -32,3 +32,10 @@ jobs:
             --label "build-id=${{ github.run_id }}" .
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+      - name: Delete old untagged images
+        uses: actions/delete-package-versions@v4
+        with:
+          package-name: ${{ env.IMAGE_NAME }}
+          package-type: container
+          min-versions-to-keep: 3
+          delete-only-untagged-versions: true
