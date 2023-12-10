@@ -24,6 +24,11 @@ jobs:
           VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
-          docker build -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME \
+            --label "org.opencontainers.image.title=${IMAGE_NAME}" \
+            --label "org.opencontainers.image.version=${VERSION}" \
+            --label "org.opencontainers.image.source=${{ github.repositoryUrl}}" \
+            --label "org.opencontainers.image.revision=${{ github.sha }}" \
+            --label "build-id=${{ github.run_id }}" .
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
